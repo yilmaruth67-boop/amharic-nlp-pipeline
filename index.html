@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amharic NLP & Transliteration Pipeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+    <div class="max-w-3xl mx-auto px-6 py-12 w-full">
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl font-bold tracking-tight mb-2">Amharic NLP Microservice</h1>
+            <p class="text-slate-400">High-performance normalization & phonetic transliteration pipeline.</p>
+        </header>
+
+        <main class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl space-y-6">
+            <div>
+                <label for="inputText" class="block text-sm font-medium text-slate-300 mb-2">Enter Amharic Text (Fidel):</label>
+                <textarea id="inputText" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-indigo-500" placeholder="ሰላም ልዑል..."></textarea>
+            </div>
+
+            <button id="processBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-lg transition-colors">
+                Process Pipeline
+            </button>
+
+            <div class="space-y-4 pt-4 border-t border-slate-700">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pipeline Output</h2>
+                <div id="outputBox" class="bg-slate-900 border border-slate-700 rounded-lg p-4 font-mono text-sm text-indigo-300 min-h-[100px] whitespace-pre-wrap">Results will appear here...</div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-800">
+        Built with PHP, MySQL & Tailwind CSS. MIT License.
+    </footer>
+
+    <script>
+        document.getElementById('processBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputText').value;
+            const outputBox = document.getElementById('outputBox');
+            
+            outputBox.textContent = "Processing...";
+
+            try {
+                const response = await fetch('index.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer amharic_secret_token_abc123'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+                outputBox.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                outputBox.textContent = "Error connecting to pipeline: " + err.message;
+            }
+        });
+    </script>
+</body>
+</html>

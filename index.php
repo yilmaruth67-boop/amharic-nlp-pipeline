@@ -1,15 +1,29 @@
 <?php
+require_once 'config.php';
+
+// Suppress errors and set headers
 ini_set('display_errors', 0);
 error_reporting(0);
-header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
+// Database Connection using constants from config.php
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if ($conn->connect_error) {
+    echo json_encode(["status" => "error", "message" => "Database connection failed"]);
+    exit();
+}
+$conn->set_charset("utf8mb4");
+
+// Get incoming JSON payload
 $inputJSON = file_get_contents('php://input');
 $input = json_decode($inputJSON, TRUE);
 $text = $input['text'] ?? '';
@@ -95,6 +109,7 @@ for ($i = 0; $i < $mb_len; $i++) {
     $transliterated .= $fidelMap[$char] ?? $char;
 }
 
+// Return JSON response
 echo json_encode([
     "status" => "success",
     "original_text" => $text,
