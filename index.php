@@ -2,7 +2,9 @@
 /**
  * Enterprise Amharic NLP Pipeline with Bearer Token Auth & MySQL Logging
  */
-
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
 // Database Configuration
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
